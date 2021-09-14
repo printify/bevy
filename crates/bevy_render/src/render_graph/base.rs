@@ -58,6 +58,7 @@ pub struct BaseRenderGraphConfig {
     pub add_2d_camera: bool,
     pub add_3d_camera: bool,
     pub add_main_depth_texture: bool,
+    pub add_main_color_attachment_texture: bool,
     pub add_main_pass: bool,
     pub connect_main_pass_to_swapchain: bool,
     pub connect_main_pass_to_main_depth_texture: bool,
@@ -86,6 +87,7 @@ impl Default for BaseRenderGraphConfig {
             add_3d_camera: true,
             add_main_pass: true,
             add_main_depth_texture: true,
+            add_main_color_attachment_texture: true,
             connect_main_pass_to_swapchain: true,
             connect_main_pass_to_main_depth_texture: true,
         }
@@ -205,7 +207,7 @@ pub(crate) fn add_base_graph(config: &BaseRenderGraphConfig, world: &mut World) 
             .unwrap();
     }
 
-    if msaa.samples > 1 {
+    if msaa.samples > 1 && config.add_main_color_attachment_texture {
         graph.add_node(
             node::MAIN_SAMPLED_COLOR_ATTACHMENT,
             WindowTextureNode::new(
