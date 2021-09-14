@@ -60,6 +60,7 @@ pub struct BaseRenderGraphConfig {
     pub add_main_depth_texture: bool,
     pub add_main_color_attachment_texture: bool,
     pub add_main_pass: bool,
+    pub add_swap_chain: bool,
     pub connect_main_pass_to_swapchain: bool,
     pub connect_main_pass_to_main_depth_texture: bool,
 }
@@ -88,6 +89,7 @@ impl Default for BaseRenderGraphConfig {
             add_main_pass: true,
             add_main_depth_texture: true,
             add_main_color_attachment_texture: true,
+            add_swap_chain: true,
             connect_main_pass_to_swapchain: true,
             connect_main_pass_to_main_depth_texture: true,
         }
@@ -187,11 +189,13 @@ pub(crate) fn add_base_graph(config: &BaseRenderGraphConfig, world: &mut World) 
         }
     }
 
-    graph.add_node(
-        node::PRIMARY_SWAP_CHAIN,
-        WindowSwapChainNode::new(WindowId::primary()),
-    );
-
+    if config.add_swap_chain {
+        graph.add_node(
+            node::PRIMARY_SWAP_CHAIN,
+            WindowSwapChainNode::new(WindowId::primary()),
+        );
+    }
+    
     if config.connect_main_pass_to_swapchain {
         graph
             .add_slot_edge(
